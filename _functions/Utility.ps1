@@ -400,16 +400,22 @@ function GetMaxValueFromColumn {
 		[string]$Column
 	)
 	
+	# Write-Host "ConnectionName: $ConnectionName"
+	# Write-Host "Column: $Column"
+	# Write-Host "Query: $Query"
 	$MaxColumnResult = Invoke-SqlQuery -ConnectionName $ConnectionName -Query $Query 3>$null		#supress warnings when no results found
 	# Extract the numeric value from the DataRow
-	if ($MaxColumnResult -and $MaxColumnResult.$Column -ne [DBNull]::Value) {
-		$MaxValue = $MaxColumnResult.$Column
+	if ($MaxColumnResult -and $MaxColumnResult[0] -ne [DBNull]::Value) {
+		$MaxValue = $MaxColumnResult[0]
+		# Write-Host "Found record. Starting from $MaxValue."
 	} else {
 		# If no records found, set MaxValue to 0
+		# Write-Host "No records found. Starting from 0."
 		$MaxValue = 0
 	}
 	#assign new value to highest value in column + 1
 	$newID = $MaxValue + 1
+	# Write-Host "newID: $newID"
 			
 	return $newID
 }

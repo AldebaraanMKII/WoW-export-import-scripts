@@ -1063,7 +1063,15 @@ function Restore-All-Accounts-Main {
 		#List to store character folder paths
 		$CharacterFolderList = @()
 ####################################################################
-		Write-Host "`nDeleting existing characters..." -ForegroundColor Blue
+		Write-Host "`nDeleting existing accounts..." -ForegroundColor Blue
+		$Query = 'DELETE FROM `acore_auth`.`account` WHERE `username` != "AHBOT";
+		DELETE FROM `acore_auth`.`account_access` WHERE `id` NOT IN (SELECT `id` FROM `acore_auth`.`account`);
+		DELETE FROM `acore_auth`.`account_banned` WHERE `id` NOT IN (SELECT `id` FROM `acore_auth`.`account`);
+		DELETE FROM `acore_auth`.`account_muted` WHERE `guid` NOT IN (SELECT `id` FROM `acore_auth`.`account`);
+		DELETE FROM `acore_auth`.`realmcharacters` WHERE `acctid` NOT IN (SELECT `id` FROM `acore_auth`.`account`);'
+		Invoke-SqlUpdate -ConnectionName "AuthConn" -Query $Query | Out-Null
+####################################################################
+		Write-Host "Deleting existing characters..." -ForegroundColor Blue
 		#delete all character data before full restore, needed because of bots that may have similar names as players
 		$Query = 'DELETE FROM `acore_characters`.`characters` WHERE `name` != "Ahbot";
 		DELETE FROM `acore_characters`.`auctionhouse` WHERE `itemowner` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
