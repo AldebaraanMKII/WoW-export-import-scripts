@@ -51,11 +51,11 @@ Function Show-Menu {
 	Write-Host "4. Restore all guilds." -ForegroundColor Green
 	Write-Host "5. Backup FusionGEN website data." -ForegroundColor Green
 	Write-Host "6. Restore FusionGEN website data." -ForegroundColor Green
-	Write-Host "7. Backup character(s)." -ForegroundColor Green
-	Write-Host "8. Restore character(s)." -ForegroundColor Green
-	Write-Host "9. Backup guild(s)." -ForegroundColor Green
-	Write-Host "10. Restore guild(s)." -ForegroundColor Green
-	Write-Host "11. Exit script" -ForegroundColor Green
+	# Write-Host "7. Backup character(s)." -ForegroundColor Green
+	# Write-Host "8. Restore character(s)." -ForegroundColor Green
+	# Write-Host "9. Backup guild(s)." -ForegroundColor Green
+	# Write-Host "10. Restore guild(s)." -ForegroundColor Green
+	Write-Host "7. Exit script" -ForegroundColor Green
 }
 ########################################
 try {
@@ -89,19 +89,19 @@ try {
             } elseif ($choice -eq 6){
                 Restore-FusionGen-Main
 ########################################
-            } elseif ($choice -eq 7) {
-                Backup-Character-Main
+            # } elseif ($choice -eq 7) {
+                # Backup-Character-Main
 ########################################
-            } elseif ($choice -eq 8){
-                Restore-Character-Main
+            # } elseif ($choice -eq 8){
+                # Restore-Character-Main
 ########################################
-            } elseif ($choice -eq 9){
-                Backup-Guild-Main
+            # } elseif ($choice -eq 9){
+                # Backup-Guild-Main
 ########################################
-            } elseif ($choice -eq 10){
-                Restore-Guild-Main
+            # } elseif ($choice -eq 10){
+                # Restore-Guild-Main
 ######################################## exit
-            } elseif ($choice -eq 11){
+            } elseif ($choice -eq 7){
                 exit
 ########################################
             } else {
