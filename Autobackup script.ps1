@@ -10,9 +10,15 @@ if (-not (Get-Module -ListAvailable -Name PSSQLite)) {
 Import-Module SimplySql
 Import-Module PSSQLite
 ########################################
-. "./(Config) Backup scripts.ps1"	# import configuration
-. "./(Config) AutoBackup script.ps1"	# import configuration
-. "./Functions.ps1"	# import functions
+. "$PSScriptRoot/(Config) Backup scripts.ps1"	# import configuration
+. "$PSScriptRoot/(Config) AutoBackup script.ps1"	# import configuration
+. "$PSScriptRoot/_functions/Utility.ps1"
+. "$PSScriptRoot/_functions/Characters-Backup.ps1"
+. "$PSScriptRoot/_functions/Characters-Restore.ps1"
+. "$PSScriptRoot/_functions/Guilds-Backup.ps1"
+. "$PSScriptRoot/_functions/Guilds-Restore.ps1"
+. "$PSScriptRoot/_functions/FusionGEN-Backup.ps1"
+. "$PSScriptRoot/_functions/FusionGEN-Restore.ps1"
 ########################################
 
 ########################################
@@ -68,11 +74,14 @@ try {
 	$exitScript = $false
 	while (-not $exitScript) {
 			
-		
 		foreach ($Character in $CharacterList) {
-			$CharacterGUID = Check-Character -characterNameToSearch $Character
+			# Check if the row already exists in the database
+			$Query = "SELECT COUNT(*) as count FROM characters WHERE name LIKE '%$Character%';"
+			$ValueColumn = "count"
+			$ConnectionName = "CharConn"
+			$result = Check-Value-in-DB -Query $Query -ValueColumn $ValueColumn -ConnectionName $ConnectionName
 			
-			if ($CharacterGUID) {
+			if ($result) {
 				$CharacterData = Invoke-SqlQuery -ConnectionName "CharConn" -Query "SELECT guid, account, name, race, class, gender, level, xp, health, power1, money, skin, face, hairStyle, hairColor, facialStyle, bankSlots, equipmentCache, ammoId, arenapoints, totalHonorPoints, totalKills, creation_date, map, zone FROM characters WHERE name = @Character" -Parameters @{ Character = $Character }
 
 				$CharacterId = $CharacterData.guid
@@ -229,47 +238,40 @@ try {
 						New-Item -Path $backupDirFull -ItemType Directory | Out-Null
 					}
 					
-					CreateCharacterInfoFile -backupDirFull $backupDirFull `
-						-CharacterId $CharacterData.guid `
-						-CharacterAccountId $id `
-						-CharacterAccountName $AccountNameString `
-						-CharacterCreationDate $CharacterData.creation_date `
-						-CharacterName $CharacterData.name `
-						-CharacterRaceString $CharacterRace `
-						-CharacterClassString $CharacterClass `
-						-CharacterGenderString $CharacterGender `
-						-CharacterLevel $CharacterData.level `
-						-CharacterHonor $CharacterData.totalHonorPoints `
-						-CharacterMoneyConverted $CurCharMoneyConverted `
-						-CharacterXP $CharacterData.xp `
-						-CharacterHealth $CharacterData.health `
-						-CharacterMana $CharacterData.power1 `
-						-CharacterSkin $CharacterData.skin `
-						-CharacterFace $CharacterData.face `
-						-CharacterHairStyle $CharacterData.hairStyle `
-						-CharacterHairColor $CharacterData.hairColor `
-						-CharacterFacialStyle $CharacterData.facialStyle `
-						-CharacterBankSlots $CharacterData.bankSlots `
-						-CharacterArenapoints $CharacterData.arenapoints `
-						-CharacterTotalKills $CharacterData.totalKills `
-						-CharacterEquipmentCache $CharacterData.equipmentCache `
-						-CharacterAmmoId $CharacterData.ammoId `
-						-CharacterCurMap $CharacterData.map `
-						-CharacterCurZone $CharacterData.zone
-					
 ########################################
-				    Backup-Character -characterId $CharacterData.guid `
-                                     -characterName $CharacterData.name `
-                                     -accountID $CharacterAccountId `
-                                     -Race $CharacterData.race `
-                                     -Class $CharacterData.class `
-                                     -Gender $CharacterData.gender `
-                                     -Level $CharacterData.level `
-                                     -XP $CharacterData.xp `
-                                     -Money $CharacterData.money `
-                                     -Honor $CharacterData.totalHonorPoints `
-                                     -AccountName $AccountName.username `
-                                     -CurrentDate $CurrentDate
+					# Using splatting to avoid line continuation issues
+					$characterInfoParams = @{
+						backupDirFull = $backupDirFull
+						CharacterId = $CharacterData.guid
+						CharacterAccountId = $CharacterAccountId
+						CharacterAccountName = $AccountNameString
+						CharacterCreationDate = $CharacterData.creation_date
+						CharacterName = $CharacterData.name
+						CharacterRaceString = $CharacterRace
+						CharacterClassString = $CharacterClass
+						CharacterGenderString = $CharacterGender
+						CharacterLevel = $CharacterData.level
+						CharacterHonor = $CharacterData.totalHonorPoints
+						CharacterMoneyConverted = $CurCharMoneyConverted
+						CharacterXP = $CharacterData.xp
+						CharacterHealth = $CharacterData.health
+						CharacterMana = $CharacterData.power1
+						CharacterSkin = $CharacterData.skin
+						CharacterFace = $CharacterData.face
+						CharacterHairStyle = $CharacterData.hairStyle
+						CharacterHairColor = $CharacterData.hairColor
+						CharacterFacialStyle = $CharacterData.facialStyle
+						CharacterBankSlots = $CharacterData.bankSlots
+						CharacterArenapoints = $CharacterData.arenapoints
+						CharacterTotalKills = $CharacterData.totalKills
+						CharacterEquipmentCache = $CharacterData.equipmentCache
+						CharacterAmmoId = $CharacterData.ammoId
+						CharacterCurMap = $CharacterData.map
+						CharacterCurZone = $CharacterData.zone
+					}
+					CreateCharacterInfoFile @characterInfoParams
+#############################################################
+					Backup-Character -characterId $CharacterData.guid -characterName $CharacterData.name -accountID $id -BackupDir $backupDirFull
 					
 					#7zip and delete folder
 					if ($7zipCompression) {
@@ -285,12 +287,8 @@ try {
 						}
 						
 					}
-					
-					
 					Write-Host "Character $CharacterName backed up." -ForegroundColor Green
 				}
-
-
 ########################################
 			} else {
 				Write-Host "Character $Character does not exist in database. Skipping..." -ForegroundColor Red
@@ -307,7 +305,13 @@ try {
 ########################################
 ########################################
 } catch {
-	Write-Host "An error occurred (line $($_.InvocationInfo.ScriptLineNumber)): $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host ("Error: An unexpected error occurred in {0} (function {1}, script {2}, line {3}): {4}" -f `
+        $_.InvocationInfo.MyCommand.Name,      # Function or command name
+        $_.InvocationInfo.FunctionName,        # Function name (if inside a function)
+        $_.InvocationInfo.ScriptName,          # Script file name
+        $_.InvocationInfo.ScriptLineNumber,    # Line number
+        $_.Exception.Message                   # Exception message
+    ) -ForegroundColor Red
 } finally {
 	# Close all connections
 	Close-SqlConnection -ConnectionName "AuthConn"
@@ -315,6 +319,8 @@ try {
 	Close-SqlConnection -ConnectionName "WorldConn"
 	
 	Stop-Transcript
+    [console]::beep()
+    pause
 	# Write-Output "Transcript stopped"
 }
 ########################################

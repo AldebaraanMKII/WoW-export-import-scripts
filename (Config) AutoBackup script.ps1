@@ -1,6 +1,6 @@
 #List of characters to backup
 $CharacterList = @(
-	"Character1",
+	"Ahbot",
 	"Character2",
 	"Character3"
 )

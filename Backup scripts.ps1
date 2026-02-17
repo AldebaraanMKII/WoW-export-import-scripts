@@ -112,7 +112,13 @@ try {
     }
 ########################################
 } catch {
-	Write-Host "An error occurred: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host ("Error: An unexpected error occurred in {0} (function {1}, script {2}, line {3}): {4}" -f `
+        $_.InvocationInfo.MyCommand.Name,      # Function or command name
+        $_.InvocationInfo.FunctionName,        # Function name (if inside a function)
+        $_.InvocationInfo.ScriptName,          # Script file name
+        $_.InvocationInfo.ScriptLineNumber,    # Line number
+        $_.Exception.Message                   # Exception message
+    ) -ForegroundColor Red
 } finally {
 	Stop-Transcript
 	# Write-Output "Transcript stopped"
