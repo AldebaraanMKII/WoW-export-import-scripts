@@ -627,6 +627,15 @@ function Restore-All-Guilds-Main {
 		Write-Host "Found $($guildFolders.Count) guild backups. Starting restore process..." -ForegroundColor Cyan
 		$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 ####################################################################
+
+		# Write-Host "`nDeleting existing guilds..." -ForegroundColor Blue
+		# $Query = 'DELETE FROM `acore_auth`.`account` WHERE `username` != "AHBOT";
+		# DELETE FROM `acore_auth`.`account_access` WHERE `id` NOT IN (SELECT `id` FROM `acore_auth`.`account`);
+		# DELETE FROM `acore_auth`.`account_banned` WHERE `id` NOT IN (SELECT `id` FROM `acore_auth`.`account`);
+		# DELETE FROM `acore_auth`.`account_muted` WHERE `guid` NOT IN (SELECT `id` FROM `acore_auth`.`account`);
+		# DELETE FROM `acore_auth`.`realmcharacters` WHERE `acctid` NOT IN (SELECT `id` FROM `acore_auth`.`account`);'
+		# Invoke-SqlUpdate -ConnectionName "AuthConn" -Query $Query | Out-Null
+
 		#clear lists
 		$guidMappingItems.Clear()
 		$guidMappingGuilds.Clear()
@@ -658,7 +667,7 @@ function Restore-All-Guilds-Main {
 		if (Test-Path -Path $sqlFilePath) {
 			if (Table-Exists -TableName "creature" -ConnectionName "WorldConn") {
 				# Get the maximum GUID from the characters table
-				$ConnectionName = "CharConn"
+				$ConnectionName = "WorldConn"
 				$Query = "SELECT MAX(guid) FROM creature"
 				$Column = "guid"
 				$newCreatureGuid = GetMaxValueFromColumn -ConnectionName $ConnectionName -Query $Query -Column $Column
