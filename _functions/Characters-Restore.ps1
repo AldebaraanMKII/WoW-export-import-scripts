@@ -1131,6 +1131,10 @@ function Restore-All-Accounts-Main {
 		DELETE FROM `acore_playerbots`.`playerbots_account_links`;'
 		Invoke-SqlUpdate -ConnectionName "PBotConn" -Query $Query | Out-Null
 ####################################################################
+		Write-Host "Deleting module creature data..." -ForegroundColor Blue
+		$Query = 'DELETE FROM `acore_world`.`creature` WHERE `id1` IN (601026, 190010, 300000, 290011, 601015, 200001, 200002, 190000, 601016, 93080, 199999, 55333, 100000, 500030, 98888);'
+		Invoke-SqlUpdate -ConnectionName "WorldConn" -Query $Query | Out-Null
+####################################################################
 		foreach ($accountFolder in $accountFolders) {
 			$accountName = $accountFolder.Name
 			Write-Host "`nRestoring account: $accountName" -ForegroundColor Blue
