@@ -1163,7 +1163,10 @@ function Restore-All-Accounts-Main {
 ####################################################################
 		Write-Host "Deleting playerbot data..." -ForegroundColor Blue
 		$Query = 'DELETE FROM `acore_playerbots`.`playerbots_random_bots`;
-		DELETE FROM `acore_playerbots`.`playerbots_account_links`;'
+		DELETE FROM `acore_playerbots`.`playerbots_account_links`;
+		DELETE FROM `acore_playerbots`.`playerbots_account_type`;
+		DELETE FROM `acore_playerbots`.`playerbots_guild_tasks`;
+		DELETE FROM `acore_playerbots`.`playerbots_db_store`;'
 		Invoke-SqlUpdate -ConnectionName "PBotConn" -Query $Query | Out-Null
 ####################################################################
 		Write-Host "Deleting module creature data..." -ForegroundColor Blue
