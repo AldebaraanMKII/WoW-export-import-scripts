@@ -1075,6 +1075,30 @@ function Restore-All-Accounts-Main {
 		Write-Host "Deleting existing characters..." -ForegroundColor Blue
 		#delete all character data before full restore, needed because of bots that may have similar names as players
 		$Query = 'DELETE FROM `acore_characters`.`characters` WHERE `name` != "Ahbot";
+		
+		DELETE FROM `acore_characters`.`account_data` WHERE `accountID` NOT IN (SELECT `id` FROM `acore_auth`.`account`);
+		DELETE FROM `acore_characters`.`arena_team` WHERE `captainGuid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`battleground_deserters` WHERE `guid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`beastmaster_tamed_pets` WHERE `owner_guid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`calendar_events` WHERE `creator` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`calendar_invites` WHERE `invitee` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`calendar_invites` WHERE `sender` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`channels_bans` WHERE `playerGUID` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`character_account_data` WHERE `guid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`custom_reagent_bank` WHERE `character_id` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`custom_transmogrification` WHERE `Owner` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`custom_transmogrification_sets` WHERE `Owner` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`custom_unlocked_appearances` WHERE `account_id` NOT IN (SELECT `id` FROM `acore_auth`.`account`);
+		DELETE FROM `acore_characters`.`gm_ticket` WHERE `playerGuid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`group_member` WHERE `memberGuid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`groups` WHERE `leaderGuid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`log_arena_fights` WHERE `winner` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`log_arena_fights` WHERE `loser` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`log_arena_memberstats` WHERE `guid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`log_money` WHERE `sender_guid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`pvpstats_players` WHERE `character_guid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`quest_tracker` WHERE `character_guid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		
 		DELETE FROM `acore_characters`.`auctionhouse` WHERE `itemowner` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
 		DELETE FROM `acore_characters`.`arena_team_member` WHERE `guid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
 		DELETE FROM `acore_characters`.`arena_team` WHERE `arenaTeamId` NOT IN (SELECT `arenaTeamId` FROM `acore_characters`.`arena_team_member`);
@@ -1112,12 +1136,23 @@ function Restore-All-Accounts-Main {
 		DELETE FROM `acore_characters`.`corpse` WHERE `guid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
 		DELETE FROM `acore_characters`.`groups` WHERE `leaderGuid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
 		DELETE FROM `acore_characters`.`group_member` WHERE `memberGuid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`mail` WHERE `sender` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
 		DELETE FROM `acore_characters`.`mail` WHERE `receiver` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
 		DELETE FROM `acore_characters`.`mail_items` WHERE `receiver` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		
 		DELETE FROM `acore_characters`.`guild` WHERE `leaderguid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
 		DELETE FROM `acore_characters`.`guild_bank_eventlog` WHERE `guildid` NOT IN (SELECT `guildid` FROM `acore_characters`.`guild`);
+		DELETE FROM `acore_characters`.`guild_bank_item` WHERE `guildid` NOT IN (SELECT `guildid` FROM `acore_characters`.`guild`);
+		DELETE FROM `acore_characters`.`guild_bank_right` WHERE `guildid` NOT IN (SELECT `guildid` FROM `acore_characters`.`guild`);
+		DELETE FROM `acore_characters`.`guild_bank_tab` WHERE `guildid` NOT IN (SELECT `guildid` FROM `acore_characters`.`guild`);
+		DELETE FROM `acore_characters`.`guild_eventlog` WHERE `guildid` NOT IN (SELECT `guildid` FROM `acore_characters`.`guild`);
+		DELETE FROM `acore_characters`.`guild_house` WHERE `guild` NOT IN (SELECT `guildid` FROM `acore_characters`.`guild`);
+		DELETE FROM `acore_characters`.`guild_member_withdraw` WHERE `guid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
 		DELETE FROM `acore_characters`.`guild_member` WHERE `guildid` NOT IN (SELECT `guildid` FROM `acore_characters`.`guild`) OR `guid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
 		DELETE FROM `acore_characters`.`guild_rank` WHERE `guildid` NOT IN (SELECT `guildid` FROM `acore_characters`.`guild`);
+		DELETE FROM `acore_characters`.`petition` WHERE `ownerguid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		DELETE FROM `acore_characters`.`petition_sign` WHERE `ownerguid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
+		
 		DELETE FROM `acore_characters`.`petition` WHERE `ownerguid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
 		DELETE FROM `acore_characters`.`petition_sign` WHERE `ownerguid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`) OR `playerguid` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
 		DELETE FROM `acore_characters`.`custom_reagent_bank` WHERE `character_id` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);
