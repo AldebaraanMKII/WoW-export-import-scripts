@@ -9,6 +9,7 @@ $SourceDatabaseAuth = "acore_auth"
 $SourceDatabaseCharacters = "acore_characters"
 $SourceDatabaseWorld = "acore_world"
 $SourceDatabaseFusionGEN = "website"
+$SourceDatabasePlayerbots = "acore_playerbots"
 ###################################################################
 # Define target connection details
 # Target = database from which you will restore the characters/guilds to
@@ -20,6 +21,7 @@ $TargetDatabaseAuth = "acore_auth"
 $TargetDatabaseCharacters = "acore_characters"
 $TargetDatabaseWorld = "acore_world"
 $TargetDatabaseFusionGEN = "website"
+$TargetDatabasePlayerbots = "acore_playerbots"
 ###################################################################
 # if set to true, backup these log tables (which are over 80% of the size of the FusionGEN website database):
 # ci_sessions = contains data of a user as they journeyed through the website.

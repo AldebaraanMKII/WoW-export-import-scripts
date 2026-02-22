@@ -1009,6 +1009,7 @@ function Restore-All-Accounts-Main {
 	Open-MySqlConnection -Server $TargetServerName -Port $TargetPort -Database $TargetDatabaseAuth -Credential (New-Object System.Management.Automation.PSCredential($TargetUsername, (ConvertTo-SecureString $TargetPassword -AsPlainText -Force))) -ConnectionName "AuthConn"
 	Open-MySqlConnection -Server $TargetServerName -Port $TargetPort -Database $TargetDatabaseCharacters -Credential (New-Object System.Management.Automation.PSCredential($TargetUsername, (ConvertTo-SecureString $TargetPassword -AsPlainText -Force))) -ConnectionName "CharConn"
 	Open-MySqlConnection -Server $TargetServerName -Port $TargetPort -Database $TargetDatabaseWorld -Credential (New-Object System.Management.Automation.PSCredential($TargetUsername, (ConvertTo-SecureString $TargetPassword -AsPlainText -Force))) -ConnectionName "WorldConn"
+	Open-MySqlConnection -Server $TargetServerName -Port $TargetPort -Database $TargetDatabasePlayerbots -Credential (New-Object System.Management.Automation.PSCredential($TargetUsername, (ConvertTo-SecureString $TargetPassword -AsPlainText -Force))) -ConnectionName "PBotConn"
 ####################################################################
 	try {
 		# Get all backup folders under full_backups
@@ -1124,6 +1125,11 @@ function Restore-All-Accounts-Main {
 		DELETE FROM `acore_characters`.`custom_transmogrification_sets` WHERE `Owner` NOT IN (SELECT `guid` FROM `acore_characters`.`characters`);'
 ####################################################################
 		Invoke-SqlUpdate -ConnectionName "CharConn" -Query $Query | Out-Null
+####################################################################
+		Write-Host "Deleting playerbot data..." -ForegroundColor Blue
+		$Query = 'DELETE FROM `acore_playerbots`.`playerbots_random_bots`;
+		DELETE FROM `acore_playerbots`.`playerbots_account_links`;'
+		Invoke-SqlUpdate -ConnectionName "PBotConn" -Query $Query | Out-Null
 ####################################################################
 		foreach ($accountFolder in $accountFolders) {
 			$accountName = $accountFolder.Name
@@ -1367,6 +1373,7 @@ function Restore-All-Accounts-Main {
 	} finally {
 		Close-SqlConnection -ConnectionName "AuthConn"
 		Close-SqlConnection -ConnectionName "CharConn"
+		Close-SqlConnection -ConnectionName "PBotConn"
 		Close-SqlConnection -ConnectionName "WorldConn"
 		[console]::beep()
 	}
