@@ -1,7 +1,7 @@
 This currently only supports azerothcore based servers.
 
 # Instructions
-1. Install Powershell 7
+1. Install Powershell 7 (This is important: The Powershell that comes with windows 10 is not powershell 7, but 5.1. That version does not work with these scripts.)
 2. Install SimplySQL and PSSQLite modules:
  ```
 Install-Module -Name SimplySql, PSSQLite -Force
