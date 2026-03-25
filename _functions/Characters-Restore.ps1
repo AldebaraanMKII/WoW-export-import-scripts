@@ -22,7 +22,7 @@ function Restore-Character {
 			# Write-Host "New GUID: $newGuid" -ForegroundColor Cyan
 				
 			# Read the content of the SQL file as a single string
-			$sqlContent = Get-Content -Path $sqlFilePath -Raw
+			$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 			
 			# Extract values inside parentheses
 			$pattern = "(?<=\().*?(?=\))"
@@ -138,7 +138,7 @@ function Restore-Character {
 				if (Test-Path -Path $sqlFilePath) {
 					if (Table-Exists -TableName $table -ConnectionName "CharConn") {
 						# Read the contents of the .sql file
-						$sqlContent = Get-Content -Path $sqlFilePath -Raw
+						$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 						
 						# Pattern to match the correct column
 						# The pattern matches values inside parentheses (ignoring the last comma)
@@ -182,7 +182,7 @@ function Restore-Character {
 				if (Test-Path -Path $sqlFilePath) {
 					if (Table-Exists -TableName "character_homebind" -ConnectionName "CharConn") {
 						# Read the contents of the .sql file
-						$sqlContent = Get-Content -Path $sqlFilePath -Raw
+						$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 						
 						# Extract values inside parentheses
 						$pattern = "(?<=\().*?(?=\))"
@@ -236,7 +236,7 @@ function Restore-Character {
 						$newPetGuid = GetMaxValueFromColumn -ConnectionName $ConnectionName -Query $Query -Column $Column
 						
 						# Read the contents of the .sql file
-						$sqlContent = Get-Content -Path $sqlFilePath -Raw
+						$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 						
 						# Initialize the guidMapping as an ArrayList for dynamic addition
 						$guidMappingpPetsTemp = [System.Collections.ArrayList]::new()
@@ -312,7 +312,7 @@ function Restore-Character {
 							if (Test-Path -Path $sqlFilePath) {
 								if (Table-Exists -TableName $table -ConnectionName "CharConn") {
 									# Read the contents of the .sql file
-									$sqlContent = Get-Content -Path $sqlFilePath -Raw
+									$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 									
 									# Extract values inside parentheses
 									$pattern = "(?<=\().*?(?=\))"
@@ -377,7 +377,7 @@ function Restore-Character {
 					$newItemGuid = GetMaxValueFromColumn -ConnectionName $ConnectionName -Query $Query -Column $Column
 					
 					# Read the contents of the .sql file
-					$sqlContent = Get-Content -Path $sqlFilePath -Raw
+					$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 	
 					#initialize temp guid mapping, because using the main one caused slowdowns that got worse over time
 					$guidMappingItemsTemp = [System.Collections.ArrayList]::new()
@@ -443,7 +443,7 @@ function Restore-Character {
 					if (Test-Path -Path $sqlFilePath) {
 						if (Table-Exists -TableName "character_inventory" -ConnectionName "CharConn") {
 							# Read the contents of the .sql file
-							$sqlContent = Get-Content -Path $sqlFilePath -Raw
+							$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 							
 							# Extract values inside parentheses
 							$pattern = "(?<=\().*?(?=\))"
@@ -507,7 +507,7 @@ function Restore-Character {
 					if (Test-Path -Path $sqlFilePath) {
 						if (Table-Exists -TableName "auctionhouse" -ConnectionName "CharConn") {
 							# Read the contents of the .sql file
-							$sqlContent = Get-Content -Path $sqlFilePath -Raw
+							$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 							
 ############################################
 							$ConnectionName = "CharConn"
@@ -574,7 +574,7 @@ function Restore-Character {
 						if (Table-Exists -TableName "custom_transmogrification" -ConnectionName "CharConn") {
 							Write-Host "Importing transmog item data..." -ForegroundColor Cyan
 							# Read the contents of the .sql file
-							$sqlContent = Get-Content -Path $sqlFilePath -Raw
+							$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 							
 							# Extract values inside parentheses
 							$pattern = "(?<=\().*?(?=\))"
@@ -635,7 +635,7 @@ function Restore-Character {
 								$newPresetID = GetMaxValueFromColumn -ConnectionName $ConnectionName -Query $Query -Column $Column
 							
 								# Read the contents of the .sql file
-								$sqlContent = Get-Content -Path $sqlFilePath -Raw
+								$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 								
 								# Improved pattern to handle quoted strings
 								$pattern = "(?<=\().*?(?=\))"
@@ -683,7 +683,7 @@ function Restore-Character {
 							if (Table-Exists -TableName "custom_unlocked_appearances" -ConnectionName "CharConn") {
 								Write-Host "Importing transmog unlocked appearances..." -ForegroundColor Cyan
 								# Read the contents of the .sql file
-								$sqlContent = Get-Content -Path $sqlFilePath -Raw
+								$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 								
 								# Extract values inside parentheses
 								$pattern = "(?<=\().*?(?=\))"
@@ -752,7 +752,7 @@ function Restore-Character {
 							$newID = GetMaxValueFromColumn -ConnectionName $ConnectionName -Query $Query -Column $Column
 					
 							# Read the contents of the .sql file
-							$sqlContent = Get-Content -Path $sqlFilePath -Raw
+							$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 							
 							# Extract values inside parentheses
 							$pattern = "(?<=\().*?(?=\))"
@@ -830,7 +830,7 @@ function Restore-Multiple-Character-Tables {
 		if (Table-Exists -TableName "character_social" -ConnectionName "CharConn") {
 			# Write-Host "Restore-Multiple-Character-Tables: Found character_social table." -ForegroundColor Yellow
 			# Read the content of the SQL file as a single string
-			$sqlContent = Get-Content -Path $sqlFilePath -Raw
+			$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 			
 			# Extract values inside parentheses
 			$pattern = "(?<=\().*?(?=\))"
@@ -1188,7 +1188,7 @@ function Restore-All-Accounts-Main {
 				$accountSqlFile = Join-Path $accountFolder.FullName "_account.sql"
 				if (Test-Path $accountSqlFile) {
 					# Read the content of the SQL file as a single string
-					$sqlContent = Get-Content -Path $accountSqlFile -Raw
+					$sqlContent = Get-Content -Path $accountSqlFile -Raw -Encoding UTF8
 					# Extract values inside parentheses
 					$pattern = "(?<=\().*?(?=\))"
 					$matches = [regex]::Matches($sqlContent, $pattern)
@@ -1217,7 +1217,7 @@ function Restore-All-Accounts-Main {
 					$accountId = GetMaxValueFromColumn -ConnectionName $ConnectionName -Query $Query -Column $Column
 ####################################################################
 					# Read the content of the SQL file as a single string
-					$sqlContent = Get-Content -Path $accountSqlFile -Raw
+					$sqlContent = Get-Content -Path $accountSqlFile -Raw -Encoding UTF8
 					
 					# Remove all occurrences of "_binary " 
 					# Edit: required so MySQL stores the exact bytes
@@ -1356,7 +1356,7 @@ function Restore-All-Accounts-Main {
 			$newCreatureGuid = GetMaxValueFromColumn -ConnectionName $ConnectionName -Query $Query -Column $Column
 			
 			# Read the contents of the .sql file
-			$sqlContent = Get-Content -Path $sqlFilePath -Raw
+			$sqlContent = Get-Content -Path $sqlFilePath -Raw -Encoding UTF8
 			
 			# Extract values inside parentheses
 			$pattern = "(?<=\().*?(?=\))"
